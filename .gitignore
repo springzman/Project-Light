@@ -18,3 +18,11 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Test files
+test_summary.sh
+*.test.js
+
+# Temporary files
+/tmp/
+*.tmp
