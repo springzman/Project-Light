@@ -31,7 +31,7 @@ app.get("/fortnite/api/calendar/v1/timeline", (req, res) => {
                     state: {
                         activeStorefronts: [],
                         eventNamedWeights: {},
-                        seasonNumber: 12.41,
+                        seasonNumber: 12,
                         seasonTemplateId: "AthenaSeason:athenaseason12",
                         matchXpBonusPoints: 0,
                         seasonBegin: "2020-01-01T00:00:00Z",

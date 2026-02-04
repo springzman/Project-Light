@@ -12,14 +12,14 @@ app.post("/account/api/oauth/token", (req, res) => {
         refresh_token: "eg1~fortnite",
         refresh_expires: 86400,
         refresh_expires_at: "9999-12-02T01:12:01.100Z",
-        account_id: "fornite",
-        client_id: "fornite",
+        account_id: "fortnite",
+        client_id: "fortnite",
         internal_client: true,
         client_service: "fortnite",
-        displayName: "fornite",
+        displayName: "fortnite",
         app: "fortnite",
-        in_app_id: "fornite",
-        device_id: "fornite"
+        in_app_id: "fortnite",
+        device_id: "fortnite"
     });
 });
 
@@ -33,14 +33,14 @@ app.post("/account/api/oauth/verify", (req, res) => {
         refresh_token: "eg1~fortnite",
         refresh_expires: 86400,
         refresh_expires_at: "9999-12-02T01:12:01.100Z",
-        account_id: "fornite",
-        client_id: "fornite",
+        account_id: "fortnite",
+        client_id: "fortnite",
         internal_client: true,
         client_service: "fortnite",
-        displayName: "fornite",
+        displayName: "fortnite",
         app: "fortnite",
-        in_app_id: "fornite",
-        device_id: "fornite"
+        in_app_id: "fortnite",
+        device_id: "fortnite"
     });
 });
 
