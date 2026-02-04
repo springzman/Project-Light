@@ -1,343 +1,376 @@
-# Fortnite Emulator Backend v2.0 - Advanced Edition (Build 12.41)
+# Fortnite Backend v2.0 - Complete Edition with Discord Bot
 
-## Overview
-This is an advanced, feature-rich backend for a Fortnite emulator (Build 12.41) with complete database integration, XMPP server, and advanced matchmaking capabilities.
+## 🎮 Complete Backend Solution for Fortnite Build 12.41
 
-## 🚀 Features
+A production-ready backend with MongoDB, XMPP, Advanced Matchmaker, JWT Authentication, and Discord Bot integration.
 
-### Core Features
-- ✅ **MongoDB Integration** - Full database support with Mongoose ODM
-- ✅ **JWT Authentication** - Secure token-based authentication
-- ✅ **XMPP Server** - Real-time messaging, parties, and presence
-- ✅ **Advanced Matchmaker** - WebSocket-based matchmaking system
-- ✅ **Account System** - Complete user management with registration
-- ✅ **Rate Limiting** - Built-in protection against abuse
-- ✅ **Profile Management** - Athena, Common Core, and Creative profiles
+---
 
-### Authentication
-- OAuth token generation (password, exchange code, refresh token, client credentials)
-- Token verification and refresh
-- Session management
-- Exchange code system for easy login
+## 📦 Complete File Structure
 
-### Account Management
-- User registration and login
-- Account information retrieval
-- External authentication support
-- Privacy settings
-- Social features
+```
+Project-Light/
+├── index.js                          # Main server file
+├── package.json                      # Dependencies
+├── .env.example                      # Environment template
+├── Config/
+│   └── config.json                  # Main configuration
+├── discord/
+│   ├── bot.js                       # Discord bot main file
+│   └── commands/
+│       ├── user/                    # User commands
+│       │   ├── create.js           # Create account
+│       │   ├── details.js          # View account details
+│       │   ├── exchange-code.js    # Generate login code
+│       │   ├── lookup.js           # Look up users
+│       │   └── vbucks.js           # Check V-Bucks
+│       └── admin/                   # Admin commands
+│           ├── addall.js           # Give all cosmetics
+│           ├── addvbucks.js        # Add V-Bucks
+│           ├── ban.js              # Ban users
+│           ├── unban.js            # Unban users
+│           └── delete.js           # Delete accounts
+├── src/
+│   ├── models/                      # Database models
+│   │   ├── user.js
+│   │   ├── profiles.js
+│   │   └── friends.js
+│   ├── routes/                      # API routes
+│   │   ├── api.js
+│   │   ├── auth.js
+│   │   ├── account.js
+│   │   ├── mcp.js
+│   │   ├── lightswitch.js
+│   │   ├── cloudstorage.js
+│   │   ├── contentpages.js
+│   │   ├── version.js
+│   │   ├── keychain.js
+│   │   └── datarouter.js
+│   ├── structs/                     # Utilities
+│   │   ├── functions.js
+│   │   ├── log.js
+│   │   ├── error.js
+│   │   └── middleware.js
+│   ├── tokenManager/                # JWT tokens
+│   │   ├── tokenCreation.js
+│   │   └── tokenVerify.js
+│   ├── xmpp/                        # XMPP server
+│   │   └── xmpp.js
+│   ├── matchmaker/                  # Matchmaker
+│   │   └── matchmaker.js
+│   └── responses/                   # JSON responses
+│       └── keychain.json
+```
 
-### XMPP Features
-- Real-time presence management
-- Party system (MUCs)
-- Direct messaging (whispers)
-- Party chat
-- Friend notifications
-- Online/offline status
+---
 
-### Matchmaking
-- Queue management
-- Session assignment
-- Automatic game server connection
-- Multiple gameserver support ready
+## 🚀 Quick Start Guide
 
-## 📋 Prerequisites
+### Step 1: Install Prerequisites
 
-- **Node.js** v14 or higher
-- **MongoDB** v4.4 or higher (local or cloud instance)
-- **npm** (comes with Node.js)
+1. **Install Node.js** (v14 or higher)
+   - Download from: https://nodejs.org/
 
-## 🛠️ Installation
+2. **Install MongoDB** (v4.4 or higher)
+   - Windows: https://www.mongodb.com/try/download/community
+   - Linux: `sudo apt-get install mongodb`
+   - macOS: `brew install mongodb-community`
 
-### 1. Install MongoDB
+### Step 2: Setup Files
+
+1. **Copy all the files** to your project directory
+
+2. **Create .env file** (copy from .env.example):
+```bash
+cp .env.example .env
+```
+
+3. **Edit .env** with your settings:
+```env
+PORT=3551
+MONGODB_URI=mongodb://localhost:27017/fortnite
+JWT_SECRET=your-secret-key-change-this
+XMPP_PORT=80
+MATCHMAKER_PORT=80
+GAMESERVER_IP=127.0.0.1
+GAMESERVER_PORT=7777
+DISCORD_TOKEN=YOUR_BOT_TOKEN
+DISCORD_CLIENT_ID=YOUR_CLIENT_ID
+DISCORD_GUILD_ID=YOUR_GUILD_ID
+DISCORD_ENABLED=true
+```
+
+4. **Edit Config/config.json**:
+```json
+{
+  "port": 3551,
+  "gameServerIP": "127.0.0.1:7777",
+  "gameServerPort": 7777,
+  "mongodb": {
+    "database": "mongodb://localhost:27017/fortnite"
+  },
+  "discord": {
+    "enabled": true,
+    "token": "YOUR_DISCORD_BOT_TOKEN",
+    "clientId": "YOUR_CLIENT_ID",
+    "guildId": "YOUR_GUILD_ID"
+  },
+  "moderators": ["YOUR_DISCORD_USER_ID"]
+}
+```
+
+### Step 3: Install Dependencies
+
+```bash
+npm install
+```
+
+This will install:
+- express (Web framework)
+- mongoose (MongoDB)
+- bcrypt (Password hashing)
+- jsonwebtoken (JWT auth)
+- discord.js (Discord bot)
+- ws (WebSocket for XMPP/Matchmaker)
+- xml-parser & xmlbuilder (XMPP)
+- express-rate-limit (Rate limiting)
+- And more...
+
+### Step 4: Start MongoDB
 
 **Windows:**
 ```bash
-# Download and install from: https://www.mongodb.com/try/download/community
-# MongoDB will run automatically as a service
+# MongoDB should start automatically as a service
+# Or: net start MongoDB
 ```
 
 **Linux:**
 ```bash
-sudo apt-get install mongodb
 sudo systemctl start mongodb
 sudo systemctl enable mongodb
 ```
 
 **macOS:**
 ```bash
-brew tap mongodb/brew
-brew install mongodb-community
 brew services start mongodb-community
 ```
 
-### 2. Install Backend Dependencies
+### Step 5: Start the Backend
 
-```bash
-cd /path/to/Project-Light
-npm install
-```
-
-### 3. Configure Environment
-
-Edit `.env` file:
-```env
-PORT=3551
-MONGODB_URI=mongodb://localhost:27017/fortnite
-JWT_SECRET=your-secret-key-here
-XMPP_PORT=80
-MATCHMAKER_PORT=80
-```
-
-## 🏃 Running the Backend
-
-### Start the server:
 ```bash
 npm start
 ```
 
-The backend will start:
-- **HTTP Server**: `http://localhost:3551`
-- **XMPP Server**: WebSocket on port 80 (or configured port)
-- **Matchmaker**: WebSocket on port 80 (or configured port)
-
-### Verify it's running:
-```bash
-curl http://localhost:3551/
+You should see:
+```
+[BACKEND] Successfully connected to MongoDB!
+[BACKEND] Backend Server started on port 3551
+[BACKEND] Gameserver configured: 127.0.0.1:7777
+[XMPP] XMPP Server initialized on port 80
+[MATCHMAKER] Matchmaker Server initialized on port 80
+✅ Discord bot logged in as YourBot#1234
 ```
 
-Expected response:
-```json
-{
-  "status": "OK",
-  "message": "Fortnite Backend v2.0 - Advanced Edition",
-  "build": "12.41",
-  "features": ["MongoDB", "XMPP", "Matchmaker", "JWT Auth"],
-  "uptime": 123.456,
-  "clients": 0
-}
+---
+
+## 🤖 Discord Bot Setup
+
+### Creating Your Discord Bot
+
+1. Go to https://discord.com/developers/applications
+2. Click "New Application"
+3. Give it a name (e.g., "Fortnite Backend Bot")
+4. Go to "Bot" tab
+5. Click "Add Bot"
+6. **Copy the TOKEN** - this is your `DISCORD_TOKEN`
+7. Enable these Privileged Gateway Intents:
+   - SERVER MEMBERS INTENT
+   - MESSAGE CONTENT INTENT
+
+### Getting IDs
+
+**Client ID:**
+- Go to "General Information" tab
+- Copy "APPLICATION ID"
+
+**Guild ID:**
+- Enable Developer Mode in Discord (Settings > Advanced > Developer Mode)
+- Right-click your server > Copy ID
+
+**Your User ID:**
+- Right-click yourself in Discord > Copy ID
+
+### Inviting the Bot
+
+Use this URL (replace CLIENT_ID):
+```
+https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&permissions=8&scope=bot%20applications.commands
 ```
 
-## 📝 API Documentation
+---
 
-### Account Creation
+## 💬 Discord Commands
 
-**Create an account:**
-```bash
-POST /api/v1/account/create
-Content-Type: application/json
+### User Commands (Everyone)
 
-{
-  "email": "user@example.com",
-  "username": "PlayerName",
-  "password": "SecurePassword123"
-}
+| Command | Description | Usage |
+|---------|-------------|-------|
+| `/create` | Create a new account | `/create email:user@email.com username:Player password:pass123` |
+| `/details` | View your account info | `/details` |
+| `/exchange-code` | Get login code for game | `/exchange-code` |
+| `/lookup` | Look up another user | `/lookup username:Player` |
+| `/vbucks` | Check your V-Bucks | `/vbucks` |
+
+### Admin Commands (Moderators Only)
+
+| Command | Description | Usage |
+|---------|-------------|-------|
+| `/addall` | Give all cosmetics | `/addall username:Player` |
+| `/addvbucks` | Add V-Bucks to user | `/addvbucks username:Player amount:1000` |
+| `/ban` | Ban a user | `/ban username:Player reason:Cheating` |
+| `/unban` | Unban a user | `/unban username:Player` |
+| `/delete` | Delete an account | `/delete username:Player` |
+
+---
+
+## 🎮 Using the Backend
+
+### Creating an Account (Discord)
+
+1. Use `/create` command in Discord:
+```
+/create email:player@email.com username:Player1 password:mypassword
 ```
 
-Response:
-```json
-{
-  "success": true,
-  "message": "Account created successfully",
-  "accountId": "abc123...",
-  "username": "PlayerName",
-  "email": "user@example.com"
-}
+2. Use `/exchange-code` to get login code:
+```
+/exchange-code
 ```
 
-### Get Exchange Code
+3. Copy the code and use it in your Fortnite launcher
 
-**Generate exchange code for login:**
-```bash
-POST /api/v1/account/exchange-code
-Content-Type: application/json
+### Creating an Account (API)
 
-{
-  "username": "PlayerName",
-  "password": "SecurePassword123"
-}
-```
-
-Response:
-```json
-{
-  "success": true,
-  "exchangeCode": "abc123...",
-  "expiresInSeconds": 300,
-  "message": "Use this code to login in the game"
-}
-```
-
-### OAuth Authentication
-
-**Login with password:**
-```bash
-POST /account/api/oauth/token
-Content-Type: application/x-www-form-urlencoded
-
-grant_type=password&username=PlayerName&password=SecurePassword123
-```
-
-**Login with exchange code:**
-```bash
-POST /account/api/oauth/token
-Content-Type: application/x-www-form-urlencoded
-
-grant_type=exchange_code&exchange_code=abc123...
-```
-
-**Refresh token:**
-```bash
-POST /account/api/oauth/token
-Content-Type: application/x-www-form-urlencoded
-
-grant_type=refresh_token&refresh_token=eg1~...
-```
-
-## 🎮 Game Client Setup
-
-### Using Exchange Code
-
-1. Create an account via API:
 ```bash
 curl -X POST http://localhost:3551/api/v1/account/create \
   -H "Content-Type: application/json" \
-  -d '{"email":"test@test.com","username":"TestPlayer","password":"test123"}'
+  -d '{
+    "email": "player@email.com",
+    "username": "Player1",
+    "password": "mypassword"
+  }'
 ```
 
-2. Generate exchange code:
+### Generating Exchange Code (API)
+
 ```bash
 curl -X POST http://localhost:3551/api/v1/account/exchange-code \
   -H "Content-Type: application/json" \
-  -d '{"username":"TestPlayer","password":"test123"}'
+  -d '{
+    "username": "Player1",
+    "password": "mypassword"
+  }'
 ```
 
-3. Use the exchange code in the game launcher
+---
 
-### Using Fiddler
+## 🌐 API Endpoints
 
-Configure Fiddler to redirect Fortnite traffic:
-```javascript
-if (oSession.hostname.Contains("epicgames")) {
-    if (oSession.HTTPMethodIs("CONNECT")) {
-        oSession["x-replywithtunnel"] = "ServerTunnel";
-        return;
-    }
-    oSession.fullUrl = "http://127.0.0.1:3551" + oSession.PathAndQuery;
+### Public Endpoints
+
+```
+GET  /                              # Server info
+GET  /health                        # Health check
+GET  /api/v1/gameserver            # Gameserver info
+
+POST /api/v1/account/create        # Create account
+POST /api/v1/account/exchange-code # Get exchange code
+
+POST /account/api/oauth/token      # Login (password/exchange_code/refresh_token)
+POST /account/api/oauth/verify     # Verify token
+POST /account/api/oauth/exchange   # Generate exchange code (requires auth)
+
+GET  /lightswitch/api/service/Fortnite/status  # Service status
+GET  /fortnite/api/calendar/v1/timeline        # Game timeline
+```
+
+### Authenticated Endpoints
+
+```
+GET  /account/api/public/account/:id        # Account details
+GET  /account/api/public/account            # Multiple accounts
+POST /fortnite/api/game/v2/profile/:id/client/:op  # Profile operations
+GET  /fortnite/api/cloudstorage/system      # Cloud storage
+GET  /fortnite/api/cloudstorage/user/:id    # User cloud storage
+```
+
+---
+
+## ⚙️ Configuration
+
+### Gameserver Configuration
+
+The backend supports connecting to your Fortnite gameserver:
+
+**config.json:**
+```json
+{
+  "gameServerIP": "127.0.0.1:7777",
+  "gameServerPort": 7777
 }
 ```
 
-## 🗂️ Project Structure
-
-```
-Project-Light/
-├── index.js                    # Main server entry point
-├── package.json                # Dependencies
-├── .env                        # Environment configuration
-├── src/
-│   ├── models/                 # MongoDB models
-│   │   ├── user.js            # User schema
-│   │   ├── profiles.js        # Profile schema
-│   │   └── friends.js         # Friends schema
-│   ├── routes/                 # API endpoints
-│   │   ├── api.js             # Account management API
-│   │   ├── auth.js            # OAuth endpoints
-│   │   ├── account.js         # Account info endpoints
-│   │   ├── mcp.js             # Profile operations
-│   │   ├── lightswitch.js     # Service status
-│   │   ├── cloudstorage.js    # Cloud storage
-│   │   ├── contentpages.js    # Content pages
-│   │   ├── version.js         # Version & timeline
-│   │   ├── keychain.js        # Storefront keychain
-│   │   └── datarouter.js      # Data routing
-│   ├── structs/                # Utility modules
-│   │   ├── functions.js       # Helper functions
-│   │   ├── log.js             # Logging system
-│   │   ├── error.js           # Error handling
-│   │   └── middleware.js      # Authentication middleware
-│   ├── tokenManager/           # JWT token management
-│   │   ├── tokenCreation.js   # Token generation
-│   │   └── tokenVerify.js     # Token verification
-│   ├── xmpp/                   # XMPP server
-│   │   └── xmpp.js            # WebSocket XMPP implementation
-│   └── matchmaker/             # Matchmaking system
-│       └── matchmaker.js      # WebSocket matchmaker
-└── Config/                     # Configuration files (future)
-```
-
-## 🔧 Configuration
-
-### MongoDB Connection
-
-The backend connects to MongoDB using the URI in `.env`:
+**Environment (.env):**
 ```env
-MONGODB_URI=mongodb://localhost:27017/fortnite
+GAMESERVER_IP=127.0.0.1
+GAMESERVER_PORT=7777
 ```
 
-For MongoDB Atlas (cloud):
-```env
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/fortnite
+### MongoDB Configuration
+
+**Local MongoDB:**
+```
+mongodb://localhost:27017/fortnite
 ```
 
-### Ports
-
-- `PORT` - HTTP API server port (default: 3551)
-- `XMPP_PORT` - XMPP WebSocket port (default: 80)
-- `MATCHMAKER_PORT` - Matchmaker WebSocket port (default: 80)
-
-### JWT Secret
-
-The `JWT_SECRET` is used to sign authentication tokens. Generate a secure random string:
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+**MongoDB Atlas (Cloud):**
+```
+mongodb+srv://username:password@cluster.mongodb.net/fortnite
 ```
 
-## 🔐 Security
+### Discord Bot Configuration
 
-- Passwords are hashed using bcrypt with 10 salt rounds
-- JWT tokens expire after 8 hours (access) / 24 hours (refresh)
-- Exchange codes expire after 5 minutes
-- Rate limiting: 55 requests per 30 seconds
-- Authentication required for most endpoints
-
-## 🧪 Testing
-
-### Health Check
-```bash
-curl http://localhost:3551/health
+**Enable/Disable:**
+```json
+{
+  "discord": {
+    "enabled": true  // Set to false to disable
+  }
+}
 ```
 
-### Test Account Creation
-```bash
-curl -X POST http://localhost:3551/api/v1/account/create \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","username":"TestUser","password":"testpass123"}'
+**Moderators:**
+Add Discord user IDs to moderators array:
+```json
+{
+  "moderators": [
+    "123456789012345678",
+    "987654321098765432"
+  ]
+}
 ```
 
-### Test Login
-```bash
-curl -X POST http://localhost:3551/account/api/oauth/token \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "grant_type=password&username=TestUser&password=testpass123"
-```
+---
 
-## 📊 Monitoring
+## 🔒 Security
 
-### Active Clients
+- **Passwords**: Hashed with bcrypt (10 rounds)
+- **JWT Tokens**: 8h access, 24h refresh
+- **Rate Limiting**: 55 requests per 30 seconds
+- **MongoDB**: Secure connection with authentication
+- **Discord**: Bot token kept secret
 
-Check connected XMPP clients:
-```bash
-curl http://localhost:3551/
-```
-
-The response includes the number of connected clients.
-
-### Database Status
-
-Check MongoDB connection:
-```bash
-curl http://localhost:3551/health
-```
+---
 
 ## 🐛 Troubleshooting
 
@@ -346,68 +379,169 @@ curl http://localhost:3551/health
 **Error:** `MongoDB failed to connect`
 
 **Solution:**
-1. Make sure MongoDB is installed and running:
-   ```bash
-   # Windows: Check Services
-   # Linux: sudo systemctl status mongodb
-   # macOS: brew services list
-   ```
-2. Verify the MongoDB URI in `.env`
-3. Check MongoDB logs for errors
+1. Make sure MongoDB is running:
+   - Windows: Check Services (net start MongoDB)
+   - Linux: `sudo systemctl status mongodb`
+   - macOS: `brew services list`
+
+2. Check connection string in .env and config.json
+
+### Discord Bot Not Starting
+
+**Error:** `Discord bot logged in` not shown
+
+**Solutions:**
+1. Check `DISCORD_TOKEN` is correct
+2. Verify bot has correct permissions
+3. Make sure `discord.enabled` is `true` in config.json
+4. Check bot is invited to your server
 
 ### Port Already in Use
 
 **Error:** `EADDRINUSE: address already in use`
 
 **Solution:**
-1. Change the port in `.env`
-2. Or kill the process using the port:
-   ```bash
-   # Windows: netstat -ano | findstr :3551
-   # Linux/macOS: lsof -ti:3551 | xargs kill
-   ```
+Change port in .env or config.json:
+```env
+PORT=8080
+```
 
-### XMPP Connection Issues
+### Commands Not Showing
 
-**Problem:** XMPP clients can't connect
+**Problem:** Discord commands don't appear
 
-**Solution:**
-1. Make sure WebSocket port is not blocked by firewall
-2. Check that the port matches in game client configuration
-3. Verify HTTPS/SSL settings if using secure connections
+**Solutions:**
+1. Make sure bot has `applications.commands` scope
+2. Wait a few minutes for commands to register
+3. Restart Discord client
+4. Check bot has permissions in server
 
-## 🚧 Roadmap
+---
 
-- [ ] Item shop system
-- [ ] Locker customization
-- [ ] Friends system (add, remove, block)
-- [ ] V-Bucks management
-- [ ] Battle pass system
-- [ ] Challenges and quests
-- [ ] Stats tracking
-- [ ] Refund system
-- [ ] Discord bot integration
-- [ ] Web dashboard
+## 📊 Features
 
-## 📜 Notes on DLLs
+### ✅ Implemented
 
-The DLLs in this repository are for OGFN redirection:
-- They redirect to a specific Radmin VPN and IP
-- **Not recommended for your own use**
-- `console.dll` - Unlocks Unreal Engine console (usable)
-- `eor.dll` - Universal edit on release (usable)
+- MongoDB database integration
+- JWT authentication (multiple grant types)
+- XMPP server (messaging, parties, presence)
+- Advanced matchmaker
+- Discord bot with 10 commands
+- User account system
+- V-Bucks system
+- Rate limiting
+- Gameserver configuration
+- Health monitoring
+- API endpoints
 
-## 🙏 Credits
+### 🔄 Ready to Add
 
-- Backend architecture inspired by [Project-Reload/Reload-Backend](https://github.com/Project-Reload/Reload-Backend)
-- Original simple backend guide: [PongooDev/Fortnite-Backend-Guide](https://github.com/PongooDev/Fortnite-Backend-Guide)
+- Item shop
+- Locker customization
+- Friends system (add/remove/block)
+- Battle pass
+- Challenges/quests
+- Stats tracking
+- Web dashboard
+
+---
+
+## 📝 File Checklist
+
+Make sure you have ALL these files:
+
+```
+✅ index.js
+✅ package.json
+✅ .env (copy from .env.example)
+✅ Config/config.json
+✅ discord/bot.js
+✅ discord/commands/user/create.js
+✅ discord/commands/user/details.js
+✅ discord/commands/user/exchange-code.js
+✅ discord/commands/user/lookup.js
+✅ discord/commands/user/vbucks.js
+✅ discord/commands/admin/addall.js
+✅ discord/commands/admin/addvbucks.js
+✅ discord/commands/admin/ban.js
+✅ discord/commands/admin/unban.js
+✅ discord/commands/admin/delete.js
+✅ src/models/user.js
+✅ src/models/profiles.js
+✅ src/models/friends.js
+✅ src/routes/ (all route files)
+✅ src/structs/ (all struct files)
+✅ src/tokenManager/ (token files)
+✅ src/xmpp/xmpp.js
+✅ src/matchmaker/matchmaker.js
+✅ src/responses/keychain.json
+```
+
+---
+
+## 🎯 Testing
+
+### Test Backend
+
+```bash
+curl http://localhost:3551/
+```
+
+### Test Account Creation
+
+```bash
+curl -X POST http://localhost:3551/api/v1/account/create \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@test.com","username":"TestPlayer","password":"test123"}'
+```
+
+### Test Discord Bot
+
+In Discord:
+```
+/create email:test@test.com username:TestPlayer password:test123
+/details
+/vbucks
+```
+
+---
+
+## 💡 Tips
+
+1. **Keep .env file secret** - Never commit it to git
+2. **Use strong JWT_SECRET** - Generate with: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+3. **Set up MongoDB backups** - Important for production
+4. **Monitor logs** - Check console for errors
+5. **Test locally first** - Before deploying to production
+
+---
+
+## 📞 Support
+
+If you encounter issues:
+
+1. Check MongoDB is running
+2. Verify all configuration files
+3. Check Discord bot token and IDs
+4. Look at console logs for errors
+5. Ensure all npm packages installed
+
+---
+
+## 🏆 Credits
+
+- Backend architecture: Project-Reload/Reload-Backend
+- Original guide: PongooDev/Fortnite-Backend-Guide
 - Keychain data: LawinserverV2
 
-## 📄 License
-
-This project is for educational purposes. Ensure you have proper licenses and permissions for any Fortnite-related content.
+---
 
 ## ⚠️ Disclaimer
 
-This is an educational project. The developers are not responsible for any misuse. Epic Games and Fortnite are trademarks of Epic Games, Inc. This project is not affiliated with or endorsed by Epic Games.
+This is for educational purposes only. Fortnite is a trademark of Epic Games, Inc. This project is not affiliated with or endorsed by Epic Games.
 
+---
+
+**Version:** 2.0.0  
+**Build:** 12.41  
+**Status:** Production Ready 🚀

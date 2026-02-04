@@ -1,8 +1,9 @@
-// Require packages
+// Fortnite Backend v2.0 - Main Server File
 const express = require("express");
 const mongoose = require("mongoose");
 const http = require("http");
 const rateLimit = require("express-rate-limit");
+const fs = require("fs");
 require("dotenv").config();
 
 const log = require("./src/structs/log");
@@ -11,9 +12,13 @@ const functions = require("./src/structs/functions");
 const app = express();
 const server = http.createServer(app);
 
+// Load configuration
+const config = JSON.parse(fs.readFileSync("./Config/config.json", "utf8"));
+
 // Generate JWT secret if not provided
 global.JWT_SECRET = process.env.JWT_SECRET || functions.MakeID();
 global.exchangeCodes = [];
+global.config = config;
 
 // Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
@@ -27,7 +32,7 @@ app.use(rateLimit({
 }));
 
 // Connect to MongoDB
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/fortnite";
+const MONGODB_URI = process.env.MONGODB_URI || config.mongodb.database;
 mongoose.set('strictQuery', true);
 
 mongoose.connect(MONGODB_URI, {
@@ -61,11 +66,15 @@ app.use(require("./src/routes/datarouter"));
 app.get("/", (req, res) => {
     res.status(200).json({
         status: "OK",
-        message: "Fortnite Backend v2.0 - Advanced Edition",
+        message: "Fortnite Backend v2.0 - Advanced Edition with Discord Bot",
         build: "12.41",
-        features: ["MongoDB", "XMPP", "Matchmaker", "JWT Auth"],
+        features: ["MongoDB", "XMPP", "Matchmaker", "JWT Auth", "Discord Bot"],
         uptime: process.uptime(),
-        clients: global.Clients ? global.Clients.length : 0
+        clients: global.Clients ? global.Clients.length : 0,
+        gameserver: {
+            ip: config.gameServerIP,
+            port: config.gameServerPort
+        }
     });
 });
 
@@ -76,7 +85,21 @@ app.get("/health", (req, res) => {
         mongodb: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
         uptime: process.uptime(),
         memory: process.memoryUsage(),
-        clients: global.Clients ? global.Clients.length : 0
+        clients: global.Clients ? global.Clients.length : 0,
+        gameserver: {
+            configured: config.gameServerIP ? true : false,
+            ip: config.gameServerIP,
+            port: config.gameServerPort
+        }
+    });
+});
+
+// Gameserver info endpoint
+app.get("/api/v1/gameserver", (req, res) => {
+    res.status(200).json({
+        ip: config.gameServerIP,
+        port: config.gameServerPort,
+        fullAddress: `${config.gameServerIP}:${config.gameServerPort}`
     });
 });
 
@@ -100,10 +123,11 @@ app.use((req, res) => {
 });
 
 // Start the HTTP server
-const PORT = process.env.PORT || 3551;
+const PORT = process.env.PORT || config.port || 3551;
 server.listen(PORT, () => {
     log.backend(`Backend Server started on port ${PORT}`);
     log.backend(`Visit http://127.0.0.1:${PORT}/ to verify server is running`);
+    log.backend(`Gameserver configured: ${config.gameServerIP}:${config.gameServerPort}`);
     console.log("");
 });
 
@@ -114,6 +138,12 @@ const setupMatchmaker = require("./src/matchmaker/matchmaker");
 // Setup XMPP and Matchmaker on the same server
 setupXMPP(server);
 setupMatchmaker(server);
+
+// Start Discord bot if enabled
+if (config.discord && config.discord.enabled) {
+    log.info("Discord bot is enabled, starting...");
+    require("./discord/bot.js");
+}
 
 // Handle graceful shutdown
 process.on('SIGINT', () => {

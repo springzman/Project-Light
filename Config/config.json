@@ -1,0 +1,15 @@
+{
+  "port": 3551,
+  "gameServerIP": "127.0.0.1:7777",
+  "gameServerPort": 7777,
+  "mongodb": {
+    "database": "mongodb://localhost:27017/fortnite"
+  },
+  "discord": {
+    "enabled": true,
+    "token": "YOUR_DISCORD_BOT_TOKEN_HERE",
+    "clientId": "YOUR_DISCORD_CLIENT_ID_HERE",
+    "guildId": "YOUR_DISCORD_GUILD_ID_HERE"
+  },
+  "moderators": ["YOUR_DISCORD_USER_ID_HERE"]
+}
