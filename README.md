@@ -1,8 +1,30 @@
-# Fortnite Backend v2.0 - Complete Edition with Discord Bot
+# Fortnite Backend v3.0 - Ultimate Edition
 
 ## 🎮 Complete Backend Solution for Fortnite Build 12.41
 
 A production-ready backend with MongoDB, XMPP, Advanced Matchmaker, JWT Authentication, and Discord Bot integration.
+
+---
+
+## ⚠️ QUICK FIX: "Cannot find module 'express'" Error
+
+**If you're seeing module errors, you need to install dependencies first!**
+
+```bash
+# Navigate to project folder:
+cd "C:\Users\Admin\Desktop\Project Light"
+
+# Install all dependencies (REQUIRED!):
+npm install
+
+# Create environment file:
+copy .env.example .env
+
+# Start the server:
+npm start
+```
+
+**👉 See [INSTALLATION.md](INSTALLATION.md) for complete setup guide!**
 
 ---
 
